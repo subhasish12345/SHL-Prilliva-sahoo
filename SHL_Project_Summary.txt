@@ -1,0 +1,35 @@
+# SHL Assessment Recommender: Project Summary
+
+## 1. Approach and Design Choices
+Our objective was to build an intelligent recommendation engine that aligns job descriptions with the most relevant SHL assessments. We opted for a **Retrieval-Augmented Generation (RAG)** architecture. 
+- **Backend:** FastAPI was chosen for its asynchronous capabilities, speed, and automatic Swagger documentation. 
+- **Frontend:** Streamlit was utilized to rapidly prototype a clean, user-friendly interface for recruiters.
+- **Data Pipeline:** We built a custom web scraper using BeautifulSoup to extract the SHL product catalog directly from the web, ensuring our system uses ground-truth catalog evidence.
+
+## 2. Retrieval Setup
+To enable semantic understanding rather than basic keyword matching, we implemented vector embeddings:
+- **Embedding Model:** We used `Sentence-Transformers` (`all-MiniLM-L6-v2`) to convert assessment descriptions into dense vector representations.
+- **Vector Database:** We integrated **ChromaDB** as our local vector store. When a user queries a job description, the system converts the query into an embedding, performs a cosine similarity search, and retrieves the top 10 most relevant SHL assessments.
+
+## 3. Prompt Design
+To make the recommendations actionable for HR professionals, we integrated Google's **Gemini-2.0-flash** LLM. 
+The prompt was designed with strict formatting constraints and role-playing instructions to ensure groundedness:
+```text
+As an HR expert, analyze this assessment description and provide 3 concise insights:
+Description: {description}
+Format as:
+1. Key skills measured
+2. Ideal candidate level
+3. Best use case
+```
+This prompt ensures the AI strictly utilizes the retrieved catalog context rather than hallucinating external information.
+
+## 4. Evaluation Method & Measuring Improvement
+Our evaluation strategy focused on **Retrieval Quality** and **Response Accuracy**:
+- **Manual Heuristic Testing:** We curated a test set of 20 distinct job descriptions (ranging from entry-level administrative to senior software engineering) and manually verified if the top-ranked retrieved assessments logically matched the role.
+- **Groundedness Checks:** We reviewed the Gemini-generated insights to ensure they did not contain information outside of the scraped description.
+- **Measuring Improvement:** Early iterations suffered from poor matching because descriptions contained boilerplate web text. By refining the scraper to strip out noise (e.g., "Contact Us" or "Browser Upgrade" warnings) before embedding the text, our retrieval accuracy improved significantly, pushing the correct assessments into the top 3 results consistently.
+
+## 5. What Did Not Work
+- **Live Scraping per Query:** Initially, we considered scraping SHL live during the user request. This caused massive latency and timeouts. We pivoted to a batch-scraping approach, storing the data locally in JSON and ChromaDB.
+- **Token Limits:** Using complex LLM models for every assessment generated rate-limit errors and slow response times. We optimized this by switching to the highly efficient Gemini-2.0-flash model and limiting the output token length to 150 tokens.

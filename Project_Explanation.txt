@@ -1,0 +1,78 @@
+=============================================================
+TALENTLENS - PROJECT EXPLANATION & PRESENTATION GUIDE
+=============================================================
+
+Hi! Use this document as your "cheat sheet" to explain the TalentLens project to anyone, even if they have zero technical background.
+
+-------------------------------------------------------------
+1. THE ELEVATOR PITCH (What is this project?)
+-------------------------------------------------------------
+"TalentLens is an AI-powered search engine for HR professionals. When a recruiter has a job opening, they usually don't know exactly which skill tests or assessments they should give to the candidates. Our tool allows them to simply paste the job description, and the AI instantly reads it, understands the requirements, and recommends the exact SHL assessments they should use."
+
+-------------------------------------------------------------
+2. WHAT DOES THE CODE ACTUALLY DO? (The Workflow)
+-------------------------------------------------------------
+The project is divided into four main steps:
+
+Step 1: The Scraper (Data Collection)
+- File: app/scraper.py
+- What it does: It acts like a digital robot that visits the SHL catalog website, reads through all the assessment pages, and saves the details (name, duration, what it measures) into a database file (JSON). 
+
+Step 2: The AI Brain (Embeddings & Database)
+- File: app/rag.py
+- What it does: It takes all those scraped test descriptions and converts them into "vectors" (mathematical numbers that represent the meaning of the words). It saves these into a special AI database called ChromaDB.
+
+Step 3: The Backend Engine (The API)
+- File: app/api.py
+- What it does: This is the engine room. When a user searches for something (like "Senior Python Developer"), this code searches the ChromaDB to find the most mathematically similar tests. It also connects to Google's Gemini AI to write a short "Insight" explaining WHY this test is a good fit.
+
+Step 4: The Frontend (User Interface)
+- File: streamlit_app.py
+- What it does: This is the website the user actually sees and clicks on. It is built using a tool called Streamlit. It provides a simple search bar and beautifully displays the results.
+
+-------------------------------------------------------------
+3. WHAT DOES THIS PROJECT DO? (Capabilities)
+-------------------------------------------------------------
+* It UNDERSTANDS context: If you search for "coder", it knows to recommend "programming" tests, because it uses AI semantics, not just exact keyword matching.
+* It SCRAPES live data: It gathers real assessment data directly from the provider's website.
+* It READS URLs: A recruiter can just paste a link to a job posting, and the tool will automatically read the website and extract the job description.
+* It explains itself: Using Google's Gemini AI, it generates a custom explanation (Insights) for every recommendation, telling the recruiter what skills are being measured and what level of candidate it's for.
+
+-------------------------------------------------------------
+4. WHAT DOES THIS PROJECT NOT DO? (Limitations)
+-------------------------------------------------------------
+It is very important to clarify these points so people don't misunderstand the tool:
+* It DOES NOT test the candidates: This is not a platform for candidates to take exams.
+* It DOES NOT grade candidates: It has nothing to do with candidate scores.
+* It DOES NOT buy or book the tests: It only recommends which tests the company should purchase or use. The actual test administration happens on SHL's official platform.
+* It is NOT an Applicant Tracking System (ATS): It doesn't manage resumes or interview schedules.
+
+-------------------------------------------------------------
+5. HOW TO RUN THE CODE (Step-by-Step)
+-------------------------------------------------------------
+If someone asks you how to run it on a computer, here are the steps:
+
+1. Install Dependencies: 
+   Run `pip install -r requirements.txt` to install all the required Python libraries.
+2. Setup API Key: 
+   You need a `.env` file with `GOOGLE_API_KEY=your_key_here` to make the AI explanations work.
+3. (Optional) Update Database: 
+   Run `python app/scraper.py` and then `python app/rag.py` if you want to fetch the latest tests from the internet.
+4. Start the Backend API: 
+   Run `uvicorn app.api:app --reload`
+5. Start the Frontend Website: 
+   Open a new terminal and run `streamlit run streamlit_app.py`
+
+-------------------------------------------------------------
+6. KEY TECHNICAL BUZZWORDS TO MENTION
+-------------------------------------------------------------
+If you want to sound highly technical during an explanation, mention these:
+* "RAG Architecture" (Retrieval-Augmented Generation)
+* "Semantic Vector Search"
+* "ChromaDB"
+* "Google Gemini LLM"
+* "FastAPI" and "Streamlit"
+
+=============================================================
+AUTHOR: PRILIVA sahoo
+=============================================================

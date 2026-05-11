@@ -5,6 +5,7 @@ import streamlit as st
 import requests
 from streamlit_lottie import st_lottie
 import json
+import os
 
 # Config
 st.set_page_config(
@@ -184,7 +185,7 @@ with st.sidebar:
     with st.expander("🔧 Advanced Settings"):
         api_url = st.text_input(
             "API Endpoint",
-            value="https://talentlens-gdmn.onrender.com/recommend",
+            value=os.getenv("API_URL", "https://talentlens-gdmn.onrender.com/recommend"),
         )
     
     st.markdown("---")
