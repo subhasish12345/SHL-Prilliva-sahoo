@@ -51,8 +51,13 @@ class ChatResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
+    message: Optional[str] = None
 
 # --- ENDPOINTS ---
+
+@app.get("/", response_model=HealthResponse)
+async def root():
+    return {"status": "ok", "message": "Welcome to the SHL Conversational Agent API. Use /docs for documentation or /chat for conversational queries."}
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
