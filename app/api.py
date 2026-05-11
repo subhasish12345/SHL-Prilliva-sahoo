@@ -55,9 +55,11 @@ class HealthResponse(BaseModel):
 
 # --- ENDPOINTS ---
 
-@app.get("/", response_model=HealthResponse)
+from fastapi.responses import RedirectResponse
+
+@app.get("/", include_in_schema=False)
 async def root():
-    return {"status": "ok", "message": "Welcome to the SHL Conversational Agent API. Use /docs for documentation or /chat for conversational queries."}
+    return RedirectResponse(url="/docs")
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
